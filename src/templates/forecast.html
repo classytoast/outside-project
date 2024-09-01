@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{{ super() }}
+
+<p>Температура: {{ loc.temperature }}</p>
+<p>Ощущается как: {{ loc.feels_like }}</p>
+<p>{{ description }}</p>
+<p>Влажность: {{ loc.humidity }}</p>
+<p>Ветер: {{ wind }}, {{ '%0.1f' % (loc.wind_speed / 3.6)|float }} м/c</p>
+
+{% endblock %}

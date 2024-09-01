@@ -1,12 +1,6 @@
 from flask import Flask
 
-app = Flask(__name__)
 
+main_app = Flask(__name__)
+main_app.config['SECRET_KEY'] = 'fdgdfgdfggf786hfg6hfg6h7f'
 
-@app.route("/")
-def hello():
-    return "Test query"
-
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')

@@ -1,0 +1,55 @@
+from flask import render_template, request, redirect, url_for
+from python_weather.forecast import Forecast
+
+from app import main_app
+from weather_api.weather_main import run_getweather
+from weather_api.translate import description, wind
+
+
+@main_app.route("/", methods=["POST", "GET"])
+def main_view():
+    """
+    Главная страница сайта
+    """
+    if request.method == "POST":
+        return redirect(url_for('forecast_view', location=request.form['city']))
+
+    return render_template('main.html',
+                           title='Outside - узнай погоду')
+
+
+@main_app.route("/forecast/<location>/")
+def forecast_view(location):
+    forecast_data: Forecast = run_getweather(location)
+
+    if forecast_data.description in description:
+        description_data: str = description[forecast_data.description]
+    else:
+        description_data: str = forecast_data.description
+
+    if str(forecast_data.wind_direction) in wind:
+        wind_data: str = wind[str(forecast_data.wind_direction)]
+    else:
+        wind_data: str = str(forecast_data.wind_direction)
+    print(forecast_data.wind_direction)
+
+    return render_template('forecast.html',
+                           title=f'{forecast_data.location}({forecast_data.country}): погода сейчас',
+                           loc=forecast_data,
+                           description=description_data,
+                           wind=wind_data)
+
+
+@main_app.route("/about/")
+def about():
+    pass
+
+
+@main_app.route("/login/")
+def login():
+    pass
+
+
+@main_app.route("/registry/")
+def registry():
+    pass

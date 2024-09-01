@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <link type="text/css" href="{{ url_for('static', filename='css/stile.css') }}" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% block title -%}
+        {% if title %}
+            <title>{{ title }}</title>
+        {% else %}
+            <title>Outside - узнай погоду</title>
+        {% endif %}
+    {% endblock -%}
+</head>
+
+<body>
+    {% block content -%}
+        {%- block main_menu -%}
+            <ul>
+                <li><a href="{{url_for('main_view')}}">Выбрать город</a></li>
+                <li><a href="{{url_for('about')}}">О сайте</a></li>
+            </ul>
+        {%- endblock -%}
+
+        {%- block auth_menu -%}
+            <ul>
+                <li><a href="{{url_for('login')}}">Войти</a></li>
+                <li><a href="{{url_for('registry')}}">Зарегистрироваться</a></li>
+            </ul>
+        {%- endblock -%}
+
+        {% if title -%}
+            <h1>{{ title }}</h1>
+        {% else -%}
+            <h1>Outside - узнай погоду</h1>
+        {% endif -%}
+    {% endblock -%}
+</body>
+</html>
