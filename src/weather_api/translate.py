@@ -1,11 +1,15 @@
 
 
-description = {
-    'Partly cloudy': 'Переменная облачность'
+description: dict[str, str] = {
+    'Cloudy': 'облачно',
+    'Partly cloudy': 'Переменная облачность',
+    'Light drizzle and rain': 'Легкая морось и дождь',
+    'Overcast': 'Пасмурная погода',
+    'Patchy rain nearby': 'Мелкий дождь неподалеку'
 }
 
 
-wind = {
+wind: dict[str, str] = {
     'East': 'восточный',
     'East Northeast': 'восточный, северо-восточный',
     'East Southeast': 'восточный, юго-восточный',

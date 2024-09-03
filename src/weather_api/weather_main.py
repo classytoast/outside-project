@@ -11,7 +11,7 @@ async def getweather(location: str) -> Forecast:
     Получить через API данные по погоде в укаазанной локации
     :return: объект с данными о погоде
     """
-    async with python_weather.Client(locale=Locale.ENGLISH) as client:
+    async with python_weather.Client(locale=Locale.RUSSIAN) as client:
         weather: Forecast = await client.get(location)
 
         # returns the current day's forecast temperature (int)
@@ -48,5 +48,5 @@ if __name__ == '__main__':
     #     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     #
     # asyncio.run(getweather('Moscow'))
-    res = run_getweather('таганрог')
+    res = run_getweather('москва')
     print(res)
