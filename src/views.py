@@ -23,9 +23,13 @@ def forecast_view(location: str):
     """
     Страница данных о прогнозе, для переданного города
     """
-    forecast_data: Forecast = run_getweather(location)
+    forecast_data: Forecast | None = run_getweather(location)
 
-    if forecast_data.location != 'Ban Not':
+    if forecast_data is None:
+        flash("В данный момент наблюдаются проблемы с подключением к сервису погоды, попробуйте позже",
+              "error")
+
+    elif forecast_data.location != 'Ban Not':
         if forecast_data.description in description:
             description_data: str = description[forecast_data.description]
         else:
@@ -42,7 +46,9 @@ def forecast_view(location: str):
                                description=description_data,
                                wind=wind_data)
 
-    flash("Не найдено такого города, проверьте правильность ввода", "error")
+    else:
+        flash("Не найдено такого города, проверьте правильность ввода", "error")
+
     return redirect(url_for('main_view'))
 
 

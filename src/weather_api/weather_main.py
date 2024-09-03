@@ -1,14 +1,16 @@
 import asyncio
 import os
 
+from aiohttp import ClientConnectorError
 from python_weather.forecast import Forecast
 import python_weather
 from python_weather import Locale
+from logger import log
 
 
 async def getweather(location: str) -> Forecast:
     """
-    Получить через API данные по погоде в укаазанной локации
+    Получить через API данные по погоде в указанной локации
     :return: объект с данными о погоде
     """
     async with python_weather.Client(locale=Locale.RUSSIAN) as client:
@@ -26,27 +28,25 @@ async def getweather(location: str) -> Forecast:
         return weather
 
 
-def run_getweather(location: str) -> Forecast:
+def run_getweather(location: str) -> Forecast | None:
     """
     Запуск асинхронной функции для получения данных через API
     по погоде в укаазанной локации
 
-    :return: объект с данными о погоде
+    :return: объект с данными о погоде или None, если не удалось подключиться
     """
     if os.name == 'nt':
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-    weather = asyncio.run(getweather(location))
+    try:
+        weather = asyncio.run(getweather(location))
+    except ClientConnectorError:
+        weather = None
+        log.warning('Произошла ошибка подключения к сервису погоды')
 
     return weather
 
 
 if __name__ == '__main__':
-    # see https://stackoverflow.com/questions/45600579/asyncio-event-loop-is-closed-when-getting-loop
-    # for more details
-    # if os.name == 'nt':
-    #     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    #
-    # asyncio.run(getweather('Moscow'))
     res = run_getweather('москва')
     print(res)

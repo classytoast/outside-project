@@ -1,4 +1,7 @@
+import logging
+
 from views import *
+from logger import configure_logging
 
 
 def run():
@@ -7,4 +10,5 @@ def run():
 
 
 if __name__ == '__main__':
+    configure_logging(level=logging.INFO)
     run()
