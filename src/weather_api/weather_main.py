@@ -1,5 +1,6 @@
 import asyncio
 import os
+from collections import Counter
 
 from aiohttp import ClientConnectorError
 from python_weather.forecast import Forecast
@@ -16,35 +17,40 @@ async def getweather(location: str) -> Forecast:
     async with python_weather.Client(locale=Locale.RUSSIAN) as client:
         weather: Forecast = await client.get(location)
 
-        # returns the current day's forecast temperature (int)
-        # print(weather.temperature)
-        # print(weather.coordinates)
-        # for daily in weather.daily_forecasts:
-        #     print(daily)
-        #
-        #     for hourly in daily.hourly_forecasts:
-        #         print(f' --> {hourly!r}')
-
         return weather
 
 
-def run_getweather(location: str) -> Forecast | None:
+def run_getweather(location: str) -> tuple[Forecast | None, dict]:
     """
     Запуск асинхронной функции для получения данных через API
     по погоде в укаазанной локации
 
-    :return: объект с данными о погоде или None, если не удалось подключиться
+    :return: 1) объект с данными о погоде или None, если не удалось подключиться,
+             2) словарь с данными о погоде в разрезе дней
     """
     if os.name == 'nt':
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
+    daily_data: dict = {}
+
     try:
         weather = asyncio.run(getweather(location))
+        for daily in weather.daily_forecasts:
+            daily_description = Counter(
+                [h.description for h in daily.hourly_forecasts]
+            ).most_common()[0][0]
+            daily_data[daily.date] = {
+                'description': daily_description,
+                'hours_data': daily.hourly_forecasts,
+                'max_temp': daily.highest_temperature,
+                'min_temp': daily.lowest_temperature
+            }
+
     except ClientConnectorError:
         weather = None
         log.warning('Произошла ошибка подключения к сервису погоды')
 
-    return weather
+    return weather, daily_data
 
 
 if __name__ == '__main__':

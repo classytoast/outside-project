@@ -1,5 +1,6 @@
+from datetime import date
+
 from flask import render_template, request, redirect, url_for, flash
-from python_weather.forecast import Forecast
 
 from app import main_app
 from weather_api.weather_main import run_getweather
@@ -23,7 +24,7 @@ def forecast_view(location: str):
     """
     Страница данных о прогнозе, для переданного города
     """
-    forecast_data: Forecast | None = run_getweather(location)
+    forecast_data, daily_data = run_getweather(location)
 
     if forecast_data is None:
         flash("В данный момент наблюдаются проблемы с подключением к сервису погоды, попробуйте позже",
@@ -40,11 +41,17 @@ def forecast_view(location: str):
         else:
             wind_data: str = str(forecast_data.wind_direction)
 
-        return render_template('forecast.html',
-                               title=f'{forecast_data.location}({forecast_data.country}): погода сейчас',
-                               loc=forecast_data,
-                               description=description_data,
-                               wind=wind_data)
+        date_today = daily_data[date.today()]
+
+        return render_template(
+            'forecast.html',
+            title=f'{forecast_data.location}({forecast_data.country}): погода сейчас',
+            loc=forecast_data,
+            description=description_data,
+            wind=wind_data,
+            daily_data=daily_data,
+            date_today=date_today
+        )
 
     else:
         flash("Не найдено такого города, проверьте правильность ввода", "error")

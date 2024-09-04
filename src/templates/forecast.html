@@ -3,10 +3,20 @@
 {% block content %}
 {{ super() }}
 
-<p>Температура: {{ loc.temperature }}</p>
-<p>Ощущается как: {{ loc.feels_like }}</p>
+<p>Температура: {{ loc.temperature }}°</p>
+<p>Ощущается как: {{ loc.feels_like }}°</p>
 <p>{{ description }}</p>
 <p>Влажность: {{ loc.humidity }}</p>
 <p>Ветер: {{ wind }}, {{ '%0.1f' % (loc.wind_speed / 3.6)|float }} м/c</p>
+
+{% for day in daily_data %}
+    <p>Дата: {{ day }}</p>
+    <p>{{ daily_data[day]["description"] }}</p>
+    <p>{{ daily_data[day]["max_temp"] }}°/{{ daily_data[day]["min_temp"] }}°</p>
+{% endfor %}
+
+{% for hourly in date_today["hours_data"] %}
+    <p>{{ hourly.time.hour }}:{{ hourly.time.minute }}, {{ hourly.description }}, {{ hourly.temperature }}°</p>
+{% endfor %}
 
 {% endblock %}
