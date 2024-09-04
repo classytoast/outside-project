@@ -13,10 +13,14 @@ def main_view():
     Главная страница сайта
     """
     if request.method == "POST":
-        return redirect(url_for('forecast_view', location=request.form['city']))
+        return redirect(
+            url_for('forecast_view', location=request.form['city'])
+        )
 
-    return render_template('main.html',
-                           title='Outside - узнай погоду')
+    return render_template(
+        'main.html',
+        title='Outside - узнай погоду'
+    )
 
 
 @main_app.route("/forecast/<location>/")
@@ -61,7 +65,10 @@ def forecast_view(location: str):
 
 @main_app.route("/about/")
 def about():
-    pass
+    return render_template(
+        'about.html',
+        title='Коротко о сервисе погоды Outside'
+    )
 
 
 @main_app.route("/login/")
