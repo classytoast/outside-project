@@ -7,7 +7,7 @@ class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), unique=True)
-    psw = db.Column(db.String(100), nullable=False)
+    psw = db.Column(db.String(500), nullable=False)
     subscriptions = db.relationship('Mailing', backref='user', cascade='all,delete-orphan')
 
 

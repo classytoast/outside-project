@@ -1,10 +1,13 @@
 from datetime import date
 
 from flask import render_template, request, redirect, url_for, flash
+from werkzeug.security import generate_password_hash
 
 from app import main_app
+from forms import RegisterForm
 from weather_api.weather_main import run_getweather
 from weather_api.translate import description, wind
+from db_queries import create_user
 
 
 @main_app.route("/", methods=["POST", "GET"])
@@ -76,6 +79,23 @@ def login():
     pass
 
 
-@main_app.route("/registry/")
+@main_app.route("/registry/", methods=["POST", "GET"])
 def registry():
-    pass
+    """Страница регистрации на сайте"""
+    form = RegisterForm()
+
+    if form.validate_on_submit():
+        hash_password = generate_password_hash(request.form['psw'])
+        result = create_user(form.name.data, form.email.data, hash_password)
+
+        if result == 'success':
+            flash("регистрация прошла успешно", "success")
+            return redirect(url_for('main_view'))
+        else:
+            flash("Ошибка при добавлении данных в БД", "error")
+
+    return render_template(
+        "register.html",
+        title="Регистрация",
+        form=form
+    )
