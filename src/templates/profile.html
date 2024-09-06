@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{{ super() }}
+
+<h3>Добрый день {{current_user.name}}</h3>
+<p>Ваш email: {{current_user.email}}</p>
+<p>Подписки: данный функционал в разработке</p>
+
+{% endblock %}

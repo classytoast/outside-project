@@ -25,9 +25,9 @@
         {%- endblock -%}
 
         {%- block auth_menu -%}
-            {% if is_authenticated %}
+            {% if current_user.is_authenticated %}
                 <ul>
-                    <li><a href="{{url_for('profile')}}">Профиль</a></li>
+                    <li><a href="{{url_for('profile', username=current_user.name)}}">{{current_user.name}}</a></li>
                     <li><a href="{{url_for('logout')}}">Выйти</a></li>
                 </ul>
             {% else %}

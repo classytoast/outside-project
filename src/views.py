@@ -13,7 +13,7 @@ from db_queries import create_user, get_user_by_email, get_user_by_id
 
 @login_manager.user_loader
 def load_user(user_id):
-    """Загрузаить пользователя в куки сессии"""
+    """Загрузить пользователя в куки сессии"""
     return get_user_by_id(user_id)
 
 
@@ -28,7 +28,7 @@ def main_view():
     return render_template(
         'main.html',
         title='Outside - узнай погоду',
-        is_authenticated=current_user.is_authenticated,
+        current_user=current_user,
     )
 
 
@@ -57,7 +57,7 @@ def forecast_view(location: str):
         return render_template(
             'forecast.html',
             title=f'{forecast_data.location}({forecast_data.country}): погода сейчас',
-            is_authenticated=current_user.is_authenticated,
+            current_user=current_user,
             loc=forecast_data,
             description=description_data,
             wind=wind_data,
@@ -77,7 +77,7 @@ def about():
     return render_template(
         'about.html',
         title='Коротко о сервисе погоды Outside',
-        is_authenticated=current_user.is_authenticated
+        current_user=current_user
     )
 
 
@@ -91,14 +91,14 @@ def login():
         user = get_user_by_email(request.form['email'])
         if user and check_password_hash(user.psw, form.psw.data):
             login_user(user, remember=form.remember.data)
-            return redirect(request.args.get("next") or url_for('main_view'))
+            return redirect(request.args.get("next") or url_for('profile', username=user.name))
 
         flash("Неверная пара логин/пароль", "error")
 
     return render_template(
         "login.html",
         title="Авторизация",
-        is_authenticated=current_user.is_authenticated,
+        current_user=current_user,
         form=form
     )
 
@@ -129,13 +129,17 @@ def registry():
     return render_template(
         "register.html",
         title="Регистрация",
-        is_authenticated=current_user.is_authenticated,
+        current_user=current_user,
         form=form
     )
 
 
-@main_app.route('/profile/')
+@main_app.route('/profile/<username>/')
 @login_required
-def profile():
+def profile(username):
     """Страница личного кабинета пользователей на сайте"""
-    pass
+    return render_template(
+        'profile.html',
+        title="Личный кабинет",
+        current_user=current_user
+    )
