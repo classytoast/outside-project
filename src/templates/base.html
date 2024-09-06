@@ -25,10 +25,17 @@
         {%- endblock -%}
 
         {%- block auth_menu -%}
-            <ul>
-                <li><a href="{{url_for('login')}}">Войти</a></li>
-                <li><a href="{{url_for('registry')}}">Зарегистрироваться</a></li>
-            </ul>
+            {% if is_authenticated %}
+                <ul>
+                    <li><a href="{{url_for('profile')}}">Профиль</a></li>
+                    <li><a href="{{url_for('logout')}}">Выйти</a></li>
+                </ul>
+            {% else %}
+                <ul>
+                    <li><a href="{{url_for('login')}}">Войти</a></li>
+                    <li><a href="{{url_for('registry')}}">Зарегистрироваться</a></li>
+                </ul>
+            {% endif %}
         {%- endblock -%}
 
         {% if title -%}

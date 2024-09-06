@@ -90,7 +90,6 @@ def login():
     if form.validate_on_submit():
         user = get_user_by_email(request.form['email'])
         if user and check_password_hash(user.psw, form.psw.data):
-            # userlogin = UserLogin().create(user)
             login_user(user, remember=form.remember.data)
             return redirect(request.args.get("next") or url_for('main_view'))
 
@@ -130,7 +129,7 @@ def registry():
     return render_template(
         "register.html",
         title="Регистрация",
-        is_authenticated=current_user,
+        is_authenticated=current_user.is_authenticated,
         form=form
     )
 
