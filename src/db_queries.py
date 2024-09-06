@@ -21,7 +21,7 @@ def decorator_exceptions(func: Callable) -> Callable:
 @decorator_exceptions
 def create_user(name: str, email: str, psw: str) -> str:
     """Добавить нового пользователя в БД"""
-    new_user = m.Users(
+    new_user = m.User(
         name=name,
         email=email,
         psw=psw
@@ -30,3 +30,35 @@ def create_user(name: str, email: str, psw: str) -> str:
     db.session.commit()
 
     return 'success'
+
+
+@decorator_exceptions
+def get_user_by_id(user_id: int) -> m.User:
+    """Получить данные о пользователе по его email
+    :param user_id: id пользователя
+    :return: запись о пользователе из БД
+    """
+    user = (
+        db.session.query(
+            m.User
+        ).filter(
+            m.User.id == user_id
+        ).one()
+    )
+    return user
+
+
+@decorator_exceptions
+def get_user_by_email(email: str) -> m.User:
+    """Получить данные о пользователе по его email
+    :param email: email пользователя
+    :return: запись о пользователе из БД
+    """
+    user = (
+        db.session.query(
+            m.User
+        ).filter(
+            m.User.email == email
+        ).one()
+    )
+    return user

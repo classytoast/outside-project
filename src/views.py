@@ -1,20 +1,25 @@
 from datetime import date
 
 from flask import render_template, request, redirect, url_for, flash
-from werkzeug.security import generate_password_hash
+from flask_login import current_user, login_user, login_required, logout_user
+from werkzeug.security import generate_password_hash, check_password_hash
 
-from app import main_app
-from forms import RegisterForm
+from app import main_app, login_manager
+from forms import RegisterForm, LoginForm
 from weather_api.weather_main import run_getweather
 from weather_api.translate import description, wind
-from db_queries import create_user
+from db_queries import create_user, get_user_by_email, get_user_by_id
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    """Загрузаить пользователя в куки сессии"""
+    return get_user_by_id(user_id)
 
 
 @main_app.route("/", methods=["POST", "GET"])
 def main_view():
-    """
-    Главная страница сайта
-    """
+    """Главная страница сайта"""
     if request.method == "POST":
         return redirect(
             url_for('forecast_view', location=request.form['city'])
@@ -22,15 +27,14 @@ def main_view():
 
     return render_template(
         'main.html',
-        title='Outside - узнай погоду'
+        title='Outside - узнай погоду',
+        is_authenticated=current_user.is_authenticated,
     )
 
 
 @main_app.route("/forecast/<location>/")
 def forecast_view(location: str):
-    """
-    Страница данных о прогнозе, для переданного города
-    """
+    """Страница данных о прогнозе, для переданного города"""
     forecast_data, daily_data = run_getweather(location)
 
     if forecast_data is None:
@@ -53,6 +57,7 @@ def forecast_view(location: str):
         return render_template(
             'forecast.html',
             title=f'{forecast_data.location}({forecast_data.country}): погода сейчас',
+            is_authenticated=current_user.is_authenticated,
             loc=forecast_data,
             description=description_data,
             wind=wind_data,
@@ -68,15 +73,43 @@ def forecast_view(location: str):
 
 @main_app.route("/about/")
 def about():
+    """Страница со справочной информацией о сайте"""
     return render_template(
         'about.html',
-        title='Коротко о сервисе погоды Outside'
+        title='Коротко о сервисе погоды Outside',
+        is_authenticated=current_user.is_authenticated
     )
 
 
-@main_app.route("/login/")
+@main_app.route("/login/", methods=['POST', 'GET'])
 def login():
-    pass
+    """Страница авторизации на сайте"""
+    if current_user.is_authenticated:
+        return redirect(url_for('main_view'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = get_user_by_email(request.form['email'])
+        if user and check_password_hash(user.psw, form.psw.data):
+            # userlogin = UserLogin().create(user)
+            login_user(user, remember=form.remember.data)
+            return redirect(request.args.get("next") or url_for('main_view'))
+
+        flash("Неверная пара логин/пароль", "error")
+
+    return render_template(
+        "login.html",
+        title="Авторизация",
+        is_authenticated=current_user.is_authenticated,
+        form=form
+    )
+
+
+@main_app.route('/logout/')
+@login_required
+def logout():
+    logout_user()
+    flash("Вы вышли из аккаунта", "success")
+    return redirect(url_for('login'))
 
 
 @main_app.route("/registry/", methods=["POST", "GET"])
@@ -97,5 +130,13 @@ def registry():
     return render_template(
         "register.html",
         title="Регистрация",
+        is_authenticated=current_user,
         form=form
     )
+
+
+@main_app.route('/profile/')
+@login_required
+def profile():
+    """Страница личного кабинета пользователей на сайте"""
+    pass
