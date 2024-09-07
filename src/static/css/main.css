@@ -1,0 +1,38 @@
+:root {
+    --bg-color: rgb(247, 247, 247);
+    --text-color: rgb(250, 250, 250);
+    --accent-color: rgb(255, 251, 0);
+    --contrast-color: rgb(29, 29, 11);
+}
+
+body {
+    min-width: 320px;
+    font-family: "Roboto", sans-serif;
+    background-color: var(--bg-color);
+    background-image: url("../img/back.jpg");
+    background-position: center center;
+    color: var(--text-color);
+}
+
+a {
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+ul.main_left_menu {
+    list-style: none;
+    display: flex;
+}
+
+
+ul.main_left_menu li {
+    margin-right: 20px;
+}
+
+ul.auth_menu {
+    list-style: none;
+}
+
+ul.auth_menu li {
+    margin-right: 15px;
+}
