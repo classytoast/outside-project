@@ -97,7 +97,7 @@ def login():
 
     return render_template(
         "login.html",
-        title="Авторизация",
+        title=" ",
         current_user=current_user,
         form=form
     )

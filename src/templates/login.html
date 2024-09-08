@@ -4,32 +4,48 @@
 
 {{ super() }}
 
-{% for cat, msg in get_flashed_messages(True) %}
-    <div class="flash {{cat}}">{{msg}}</div>
-{% endfor %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-3"></div>
+        <div class="col-sm-3"></div>
+        <div class="col-sm-3">
 
-<form action="" method="post" class="form-contact">
-{{ form.hidden_tag() }}
+            <h1 class="main_title text-center">Авторизация</h1>
 
-{% for field in form if field.name not in ['csrf_token', 'remember', 'submit'] -%}
-    {{ field.label() }}
-    {% if field.errors %}
-        {{ field(class="invalid") }}
-        <span class="invalid-feedback">
-            {% for e in field.errors %}
-                {{ e }}
+            {% for cat, msg in get_flashed_messages(True) %}
+                <div class="flash {{cat}}">{{msg}}</div>
             {% endfor %}
-        </span>
-    {% else %}
-        {{ field() }}
-    {% endif %}
-{% endfor %}
 
-{{ form.remember.label() }}
-{{ form.remember() }}
-{{ form.submit() }}
-<hr align=left width="300px">
-<p><a href="{{url_for('registry')}}">Регистрация</a>
-</form>
+            <form action="" method="post" class="form-contact">
+            {{ form.hidden_tag() }}
+
+            {% for field in form if field.name not in ['csrf_token', 'remember', 'submit'] -%}
+                <div class="mb-3">
+                    {{ field.label(class_='form-label') }}
+                    {% if field.errors %}
+                        {{ field(class_='form-control is-invalid') }}
+                        {% for e in field.errors %}
+                            <div class="text-danger">{{ e }}</div>
+                        {% endfor %}
+                    {% else %}
+                        {{ field(class_='form-control') }}
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <div class="mb-3 form-check">
+                {{ form.remember(class_='form-check-input') }}
+                {{ form.remember.label(class_='form-check-label') }}
+            </div>
+
+            {{ form.submit(class_='btn btn-info') }}
+            <hr align=left width="300px">
+            <p><a href="{{url_for('registry')}}" class="btn btn-primary">Регистрация</a>
+            </form>
+
+        </div>
+    </div>
+</div>
 
 {% endblock %}

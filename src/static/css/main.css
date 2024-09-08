@@ -68,7 +68,7 @@ ul li a{
     line-height: 80px;
 }
 
-.search_line {
+.search_line, .form-control {
     background-color: rgb(177, 202, 202);
 }
 
