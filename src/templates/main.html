@@ -3,13 +3,24 @@
 {% block content %}
 {{ super() }}
 
-{% for cat, msg in get_flashed_messages(True) %}
-    <div class="flash {{cat}}">{{msg}}</div>
-{% endfor %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+            {% for cat, msg in get_flashed_messages(True) %}
+                <div class="flash {{cat}}">{{msg}}</div>
+            {% endfor %}
 
-<form action="" method="post">
-    <label class="form-label">Введите город: </label><input type="text" name="city" />
-    <p align="left"><input class="login_button" type="submit" value="Найти">
-</form>
+            <form action="" method="post">
+                <div class="input-group">
+                    <input type="text" class="form-control search_line" name="city" placeholder="Название города..."
+                           aria-label="Название города..." aria-describedby="button-search">
+                    <button class="btn btn-info" type="submit" id="button-addon2">Найти</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-4"></div>
+    </div>
+</div>
 
 {% endblock %}
