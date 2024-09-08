@@ -17,11 +17,28 @@ body {
 a {
     text-decoration: none;
     color: var(--text-color);
+    transition: all .5s;
+}
+
+img {
+    max-width: 100;
+    max-height: auto;
+}
+
+.header-top {
+    background-color: rgb(218, 220, 221, 0.1);
+}
+
+a:hover{
+    color: var(--accent-color);
+    text-decoration: underline;
 }
 
 ul.main_left_menu {
     list-style: none;
     display: flex;
+    margin-bottom: 0;
+    padding: 0;
 }
 
 
@@ -31,8 +48,35 @@ ul.main_left_menu li {
 
 ul.auth_menu {
     list-style: none;
+    margin-bottom: 0;
+    padding: 0;
 }
 
 ul.auth_menu li {
     margin-right: 15px;
+}
+
+ul li a{
+    line-height: 32px;
+}
+
+.github_link {
+    line-height: 32px;
+}
+
+.main_title {
+    line-height: 80px;
+}
+
+.search_line {
+    background-color: rgb(177, 202, 202);
+}
+
+.form-control:focus {
+    box-shadow: none;
+    background-color: rgb(177, 202, 202);
+}
+
+.btn-info {
+    background-color: rgba(12, 204, 204, 0.8);
 }
