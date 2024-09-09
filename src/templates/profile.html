@@ -3,8 +3,16 @@
 {% block content %}
 {{ super() }}
 
-<h3>Добрый день {{current_user.name}}</h3>
-<p>Ваш email: {{current_user.email}}</p>
-<p>Подписки: данный функционал в разработке</p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4 text-center">
+            <h3>Добрый день {{current_user.name}}</h3>
+            <p>Ваш email: {{current_user.email}}</p>
+            <p>Подписки: данный функционал в разработке</p>
+        </div>
+        <div class="col-sm-4"></div>
+    </div>
+</div>
 
 {% endblock %}
