@@ -7,6 +7,8 @@ from python_weather.forecast import Forecast
 import python_weather
 from python_weather import Locale
 from logger import log
+from weather_api.custom_forecast_classes import CustomWeather
+from dict_images import dict_images
 
 
 async def getweather(location: str) -> Forecast:
@@ -20,7 +22,7 @@ async def getweather(location: str) -> Forecast:
         return weather
 
 
-def run_getweather(location: str) -> tuple[Forecast | None, dict]:
+def run_getweather(location: str) -> tuple[CustomWeather | None, dict]:
     """
     Запуск асинхронной функции для получения данных через API
     по погоде в укаазанной локации
@@ -43,16 +45,17 @@ def run_getweather(location: str) -> tuple[Forecast | None, dict]:
                 'description': daily_description,
                 'hours_data': daily.hourly_forecasts,
                 'max_temp': daily.highest_temperature,
-                'min_temp': daily.lowest_temperature
+                'min_temp': daily.lowest_temperature,
+                'img': dict_images[daily_description]
             }
 
     except ClientConnectorError:
         weather = None
         log.warning('Произошла ошибка подключения к сервису погоды')
 
-    return weather, daily_data
+    return CustomWeather(weather), daily_data
 
 
 if __name__ == '__main__':
     res = run_getweather('москва')
-    print(res)
+    print(res[0].description)

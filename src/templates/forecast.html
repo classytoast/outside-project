@@ -3,20 +3,48 @@
 {% block content %}
 {{ super() }}
 
-<p>Температура: {{ loc.temperature }}°</p>
-<p>Ощущается как: {{ loc.feels_like }}°</p>
-<p>{{ description }}</p>
-<p>Влажность: {{ loc.humidity }}</p>
-<p>Ветер: {{ wind }}, {{ '%0.1f' % (loc.wind_speed / 3.6)|float }} м/c</p>
+<div class="wrapper">
+    <div class="up-forecast"></div>
 
-{% for day in daily_data %}
-    <p>Дата: {{ day }}</p>
-    <p>{{ daily_data[day]["description"] }}</p>
-    <p>{{ daily_data[day]["max_temp"] }}°/{{ daily_data[day]["min_temp"] }}°</p>
-{% endfor %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-2"></div>
+            <div class="col-sm-2"></div>
+            <div class="col-sm-2"></div>
+            <div class="col-sm-2"></div>
+            <div class="col-sm-2 mid-forecast">
+                {% for hourly in date_today["hours_data"] %}
+                    <p>{{ hourly.time.hour }}:{{ hourly.time.minute }}, {{ hourly.description }}, {{ hourly.temperature }}°</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
-{% for hourly in date_today["hours_data"] %}
-    <p>{{ hourly.time.hour }}:{{ hourly.time.minute }}, {{ hourly.description }}, {{ hourly.temperature }}°</p>
-{% endfor %}
+    <div class="bottom-forecast">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h1>{{ loc.temperature }}°</h1>
+                    <p>Ощущается как: {{ loc.feels_like }}°</p>
+                    <img src="{{ url_for('static', filename=loc.img) }}">
+                    <span>{{ description }}</span>
+                    <p>Влажность: {{ loc.humidity }}</p>
+                    <p>Ветер: {{ wind }}, {{ '%0.1f' % (loc.wind_speed / 3.6)|float }} м/c</p>
+                </div>
+
+                {% for day in daily_data %}
+                    <div class="col text-center forecast_col">
+                        <p>{{ day.day }}.{{ day.month }}</p>
+                        <img src="{{ url_for('static', filename=daily_data[day]['img']) }}">
+                        <p>{{ daily_data[day]["description"] }}</p>
+                        <p><h3>{{ daily_data[day]["max_temp"] }}°/{{ daily_data[day]["min_temp"] }}°</h3></p>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

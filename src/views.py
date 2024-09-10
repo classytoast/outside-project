@@ -56,7 +56,7 @@ def forecast_view(location: str):
 
         return render_template(
             'forecast.html',
-            title=f'{forecast_data.location}({forecast_data.country}): погода сейчас',
+            title=f'{forecast_data.location}({forecast_data.country})',
             current_user=current_user,
             loc=forecast_data,
             description=description_data,
