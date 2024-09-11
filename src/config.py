@@ -15,4 +15,8 @@ DB_PORT = os.environ.get('DB_PORT')
 
 DATABASE_URI = f'postgresql+psycopg2://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_DBNAME}'
 
+MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER')
+MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+
 DEBUG = os.environ.get('DEBUG', False) == 'True'

@@ -8,3 +8,4 @@ email_validator==2.2.0
 python-dotenv==1.0.1
 python-weather==2.0.3
 aiohttp==3.9.5
+Flask-Mail==0.10.0

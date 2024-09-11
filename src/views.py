@@ -4,11 +4,12 @@ from flask import render_template, request, redirect, url_for, flash
 from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from app import main_app, login_manager
+from app import main_app, login_manager, mail
 from forms import RegisterForm, LoginForm
 from weather_api.weather_main import run_getweather
 from weather_api.translate import description, wind
 from db_queries import create_user, get_user_by_email, get_user_by_id
+from mail_funcs import create_message
 
 
 @login_manager.user_loader
