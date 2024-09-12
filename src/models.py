@@ -11,6 +11,8 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(50), unique=True)
     psw = db.Column(db.String(500), nullable=False)
     subscriptions = db.relationship('Mailing', backref='user', cascade='all,delete-orphan')
+    is_confirmed = db.Column(db.Boolean, nullable=False, default=False)
+    confirmation_code = db.Column(db.String(500), nullable=False)
 
 
 class Mailing(db.Model):

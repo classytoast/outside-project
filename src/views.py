@@ -1,6 +1,7 @@
 from datetime import date
+import uuid
 
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, abort
 from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -8,8 +9,8 @@ from app import main_app, login_manager, mail
 from forms import RegisterForm, LoginForm
 from weather_api.weather_main import run_getweather
 from weather_api.translate import description, wind
-from db_queries import create_user, get_user_by_email, get_user_by_id
-from mail_funcs import create_message
+from db_queries import create_user, get_user_by_email, get_user_by_id, get_user_by_confirm_code, confirm_email
+from mail_funcs import create_confirm_message
 
 
 @login_manager.user_loader
@@ -91,10 +92,14 @@ def login():
     if form.validate_on_submit():
         user = get_user_by_email(request.form['email'])
         if user and check_password_hash(user.psw, form.psw.data):
-            login_user(user, remember=form.remember.data)
-            return redirect(request.args.get("next") or url_for('profile', username=user.name))
+            if user.is_confirmed:
+                login_user(user, remember=form.remember.data)
+                return redirect(request.args.get("next") or url_for('profile', username=user.name))
 
-        flash("Неверная пара логин/пароль", "error")
+            flash("Для доступа в личный кабинет вам необходимо подтвердить свою почту", "error")
+
+        else:
+            flash("Неверная пара логин/пароль", "error")
 
     return render_template(
         "login.html",
@@ -119,10 +124,20 @@ def registry():
 
     if form.validate_on_submit():
         hash_password = generate_password_hash(request.form['psw'])
-        result = create_user(form.name.data, form.email.data, hash_password)
+        confirm_code = str(uuid.uuid4())
+        result = create_user(form.name.data, form.email.data,
+                             hash_password, confirm_code)
 
         if result == 'success':
-            flash("регистрация прошла успешно", "success")
+            mail.send(
+                create_confirm_message(
+                    url_for('confirm_page', code=confirm_code, _external=True),
+                    form.email.data
+                )
+            )
+            flash("регистрация прошла успешно, но для доступа в личный кабинет "\
+                  "подтвердите свою почту, для этого проверьте свой email, который вы указали "\
+                  "при регистрации, на него придёт письмо с ссылкой для подтверждения", "success")
             return redirect(url_for('main_view'))
         else:
             flash("Ошибка при добавлении данных в БД", "error")
@@ -133,6 +148,20 @@ def registry():
         current_user=current_user,
         form=form
     )
+
+
+@main_app.route('/confirm/<code>/')
+def confirm_page(code):
+    """Страница подтверждения почтового ящика, формируется при отправке по email"""
+    user = get_user_by_confirm_code(code)
+    if user:
+        confirm_email(user)
+        return render_template(
+            'confirm_success.html',
+            title=" "
+        )
+
+    abort(404)
 
 
 @main_app.route('/profile/<username>/')

@@ -1,19 +1,23 @@
 from flask_mail import Message
 
 
-def create_message(header: str,
-                   body_html: str,
-                   address: str) -> Message:
+def create_confirm_message(url: str,
+                           address: str) -> Message:
     """
-    формирование сообщения для отправки
+    формирование сообщения о подтверждении почты для отправки
 
-    :param header: Тема будущего письма
-    :param body_html: Само сообщение в формате html
+    :param url: url ссылка для подтверждения
     :param address: email адрес, на который будет отправлено письмо
     :return: объект класса Message, с необходимыми данными для отправки
     """
     return Message(
-        header,
+        'Подтверждение почты',
         recipients=[address],
-        html=body_html
+        html=f"""
+             <h2>Добрый день!</h2>
+             <p>Для завершения регистрации на сайте "Outside" необходимо перейти по
+             указанной ниже ссылке:<p>
+             <a href="{url}">Подтвердить</a>
+             <p>Если вы не регистрировались на сайте, то просьба проигнорировать это сообщение<p>
+             """
     )

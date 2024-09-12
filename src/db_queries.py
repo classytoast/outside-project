@@ -1,6 +1,8 @@
 from functools import wraps
 from typing import Callable, Any
 
+from sqlalchemy import and_
+
 from app import db
 import models as m
 from logger import log
@@ -19,12 +21,14 @@ def decorator_exceptions(func: Callable) -> Callable:
 
 
 @decorator_exceptions
-def create_user(name: str, email: str, psw: str) -> str:
+def create_user(name: str, email: str,
+                psw: str, confirm_code: str) -> str:
     """Добавить нового пользователя в БД"""
     new_user = m.User(
         name=name,
         email=email,
-        psw=psw
+        psw=psw,
+        confirmation_code=confirm_code
     )
     db.session.add(new_user)
     db.session.commit()
@@ -62,3 +66,29 @@ def get_user_by_email(email: str) -> m.User:
         ).one()
     )
     return user
+
+
+@decorator_exceptions
+def get_user_by_confirm_code(code: str) -> m.User:
+    """Получить данные о пользователе по его email
+    :param code: code, который приходит пользователям на почту
+    :return: запись о пользователе из БД
+    """
+    user = (
+        db.session.query(
+            m.User
+        ).filter(
+            and_(
+                m.User.confirmation_code == code,
+                m.User.is_confirmed == False
+            )
+        ).one()
+    )
+    return user
+
+
+@decorator_exceptions
+def confirm_email(user: m.User) -> None:
+    """Подтвердить почту переданному пользователю"""
+    user.is_confirmed = True
+    db.session.commit()
