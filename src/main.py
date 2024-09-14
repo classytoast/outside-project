@@ -1,7 +1,8 @@
 import logging
 
 import config
-from views import *
+from app import main_app
+import views  # noqa
 from logger import configure_logging
 
 

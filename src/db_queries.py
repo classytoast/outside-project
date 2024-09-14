@@ -80,7 +80,7 @@ def get_user_by_confirm_code(code: str) -> m.User:
         ).filter(
             and_(
                 m.User.confirmation_code == code,
-                m.User.is_confirmed == False
+                m.User.is_confirmed.is_(False)
             )
         ).one()
     )
