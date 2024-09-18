@@ -103,3 +103,22 @@ ul li a{
 .forecast_col:hover {
     background-color: rgba(106, 134, 158, 0.4);
 }
+
+#hourlyDataContainer p {
+    /* Нормальное состояние для элементов, которые уже были на странице */
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+#hourlyDataContainer p.dynamic {
+    /* Начальное состояние для динамически добавляемых элементов */
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+#hourlyDataContainer p.dynamic.show {
+    /* Плавное появление для динамических элементов */
+    opacity: 1;
+    transform: translateY(0);
+}

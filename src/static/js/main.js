@@ -16,7 +16,14 @@ function showHourlyData(day) {
         const p = document.createElement('p');
         
         p.textContent = daily_data[day]['hours_data'][hour];
+
+        p.classList.add('dynamic');
         
         container.appendChild(p);
+
+        setTimeout(() => {
+            p.classList.add('show');  // Добавляем класс, который активирует плавное появление
+        }, 50);
     }
+
 }
