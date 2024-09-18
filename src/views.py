@@ -1,7 +1,8 @@
 from datetime import date
 import uuid
+import json
 
-from flask import render_template, request, redirect, url_for, flash, abort
+from flask import render_template, request, redirect, url_for, flash, abort, jsonify
 from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -54,7 +55,7 @@ def forecast_view(location: str):
         else:
             wind_data: str = str(forecast_data.wind_direction)
 
-        date_today = daily_data[date.today()]
+        date_today = daily_data[date.today().strftime('%d-%m')]
 
         return render_template(
             'forecast.html',

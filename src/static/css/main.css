@@ -97,4 +97,9 @@ ul li a{
 .forecast_col {
     background-color: rgba(106, 134, 158, 0.1);
     margin-right: 10px;
+    transition: all .9s;
+}
+
+.forecast_col:hover {
+    background-color: rgba(106, 134, 158, 0.4);
 }

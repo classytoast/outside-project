@@ -13,9 +13,9 @@
             <div class="col-sm-2"></div>
             <div class="col-sm-2"></div>
             <div class="col-sm-2"></div>
-            <div class="col-sm-2 mid-forecast">
+            <div class="col-sm-2 mid-forecast" id="hourlyDataContainer">
                 {% for hourly in date_today["hours_data"] %}
-                    <p>{{ hourly.time.hour }}:{{ hourly.time.minute }}, {{ hourly.description }}, {{ hourly.temperature }}°</p>
+                    <p>{{hourly}}</p>
                 {% endfor %}
             </div>
         </div>
@@ -34,8 +34,8 @@
                 </div>
 
                 {% for day in daily_data %}
-                    <div class="col text-center forecast_col">
-                        <p>{{ day.day }}.{{ day.month }}</p>
+                    <div class="col text-center forecast_col" id="{{loop.index}}" data-day="{{ day }}">
+                        <p>{{ day }}</p>
                         <img src="{{ url_for('static', filename=daily_data[day]['img']) }}">
                         <p>{{ daily_data[day]["description"] }}</p>
                         <p><h3>{{ daily_data[day]["max_temp"] }}°/{{ daily_data[day]["min_temp"] }}°</h3></p>
@@ -46,5 +46,10 @@
         </div>
     </div>
 </div>
+
+<script>
+    const daily_data = {{ daily_data|tojson }}
+    console.log(daily_data);
+</script>
 
 {% endblock %}

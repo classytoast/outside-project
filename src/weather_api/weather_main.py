@@ -41,12 +41,19 @@ def run_getweather(location: str) -> tuple[CustomWeather | None, dict]:
             daily_description = Counter(
                 [h.description for h in daily.hourly_forecasts]
             ).most_common()[0][0]
-            daily_data[daily.date] = {
-                'description': daily_description,
-                'hours_data': daily.hourly_forecasts,
-                'max_temp': daily.highest_temperature,
-                'min_temp': daily.lowest_temperature,
-                'img': dict_images[daily_description]
+
+            hourly = []
+            for hour in daily.hourly_forecasts:
+                hourly.append(
+                    f'{hour.time.hour}:{hour.time.minute}, {hour.description}, {hour.temperature}°'
+                )
+
+            daily_data[daily.date.strftime('%d-%m')] = {
+                "description": daily_description,
+                "hours_data": hourly,
+                "max_temp": daily.highest_temperature,
+                "min_temp": daily.lowest_temperature,
+                "img": dict_images[daily_description]
             }
 
     except ClientConnectorError:
